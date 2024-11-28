@@ -1,6 +1,6 @@
 import { FunctionComponent, useCallback, useMemo } from 'react';
 
-import reactLogo from '../../../assets/react.svg';
+import reactLogo from '../../../assets/richometre.png';
 import NavbarItem from './NavBarItem';
 import { useAppDispatch, useAppSelector } from '../../../store/redux.hooks';
 import { Button } from 'react-aria-components';
@@ -27,17 +27,17 @@ const NavBar: FunctionComponent = () => {
     <nav className='navbar'>
       <ul className='navbar__item-list'>
         <li>
-          <NavbarItem label={"Home"} icon={<img src={reactLogo} alt='React Logo' />} to='/' />
+          <NavbarItem label={<span style={{ fontWeight: "bold", color: "navy" }}>Home</span>} icon={<img src={reactLogo} alt='React Logo' />} to='/' />
         </li>
         <li>
-          <NavbarItem label={"Demo"} icon={<img src={reactLogo} alt='React Logo' />} to='/demo/123' state={{ from: "HomePage" }}/>
+          <NavbarItem label={<span style={{ fontWeight: "bold", color: "navy" }}>Bourse</span>} icon={<img src={reactLogo} alt='React Logo' />} to='/demo/123' state={{ from: "HomePage" }}/>
         </li>
         <li>
-          <NavbarItem label={"External Movie"} icon={<img src={reactLogo} alt='React Logo' />} to='/external-movie' />
+          <NavbarItem label={<span style={{ fontWeight: "bold", color: "navy" }}>Crypto</span>} icon={<img src={reactLogo} alt='React Logo' />} to='/external-movie' />
         </li>
         {!isAuthenticated && 
           <li>
-            <NavbarItem label={"Login"} icon={<img src={reactLogo} alt='React Logo' />} to='/login' replace={false} />
+            <NavbarItem label={<span style={{ fontWeight: "bold", color: "navy" }}>Login</span>} icon={<img src={reactLogo} alt='React Logo' />} to='/login' replace={false} />
           </li>
         }
       </ul>

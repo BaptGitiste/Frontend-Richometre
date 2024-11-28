@@ -9,14 +9,14 @@
   /* color themes for dark and light modes, generated with Leonardo.
    * Light: https://leonardocolor.io/theme.html?name=Light&config=%7B%22baseScale%22%3A%22Gray%22%2C%22colorScales%22%3A%5B%7B%22name%22%3A%22Gray%22%2C%22colorKeys%22%3A%5B%22%23000000%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.12%22%2C%221.45%22%2C%222.05%22%2C%223.02%22%2C%224.54%22%2C%227%22%2C%2210.86%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22Purple%22%2C%22colorKeys%22%3A%5B%22%235e30eb%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.12%22%2C%221.45%22%2C%222.05%22%2C%223.02%22%2C%224.54%22%2C%227%22%2C%2210.86%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22Red%22%2C%22colorKeys%22%3A%5B%22%23e32400%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.12%22%2C%221.45%22%2C%222.05%22%2C%223.02%22%2C%224.54%22%2C%227%22%2C%2210.86%22%5D%2C%22smooth%22%3Afalse%7D%5D%2C%22lightness%22%3A98%2C%22contrast%22%3A1%2C%22saturation%22%3A100%2C%22formula%22%3A%22wcag2%22%7D */
   :root {
-    --background-color: #f8f8f8;
+    --background-color: #010c20;
     --black-light: #ecf0f1;
     --gray-50: #ffffff;
     --gray-100: #d0d0d0;
     --gray-200: #afafaf;
     --gray-300: #8f8f8f;
     --gray-400: #717171;
-    --gray-500: #555555;
+    --gray-500: #3c3b3b;
     --gray-600: #393939;
     --purple-100: #d5c9fa;
     --purple-200: #b8a3f6;
@@ -37,14 +37,14 @@
   /* Dark: https://leonardocolor.io/theme.html?name=Dark&config=%7B%22baseScale%22%3A%22Gray%22%2C%22colorScales%22%3A%5B%7B%22name%22%3A%22Gray%22%2C%22colorKeys%22%3A%5B%22%23000000%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.12%22%2C%221.45%22%2C%222.05%22%2C%223.02%22%2C%224.54%22%2C%227%22%2C%2210.86%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22Purple%22%2C%22colorKeys%22%3A%5B%22%235e30eb%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.12%22%2C%221.45%22%2C%222.05%22%2C%223.02%22%2C%224.54%22%2C%227%22%2C%2210.86%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22Red%22%2C%22colorKeys%22%3A%5B%22%23e32400%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.12%22%2C%221.45%22%2C%222.05%22%2C%223.02%22%2C%224.54%22%2C%227%22%2C%2210.86%22%5D%2C%22smooth%22%3Afalse%7D%5D%2C%22lightness%22%3A11%2C%22contrast%22%3A1%2C%22saturation%22%3A100%2C%22formula%22%3A%22wcag2%22%7D */
   @media (prefers-color-scheme: dark) {
     :root {
-      --background-color: #1d1d1d;
+      --background-color: #010e29;
       --black-light: #34495e;
       --gray-50: #101010;
       --gray-100: #393939;
       --gray-200: #4f4f4f;
       --gray-300: #686868;
       --gray-400: #848484;
-      --gray-500: #a7a7a7;
+      --gray-500: #595757;
       --gray-600: #cfcfcf;
       --purple-100: #3c1e95;
       --purple-200: #522acd;
