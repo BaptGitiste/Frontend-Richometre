@@ -3,12 +3,11 @@ import { createBrowserRouter } from "react-router-dom";
 import HomePage from "../pages/HomePage";
 import Layout from "../components/layout/Layout";
 import Root from "../pages/Root";
-import ExternalMoviePage from "../pages/external-movie-page/ExternalMoviePage";
 import LoginPage from "../pages/login/LoginPage";
 import RegisterPage from "../pages/register/RegisterPage";
-import AuthenticationGuard from "./AuthenticationGuard";
 import NotFoundPage from "../pages/not-found/NotFoundPage";
 import Bourse from "../pages/Bourse.tsx";
+import Crypto from "../pages/Crypto.tsx";
 
 const router = createBrowserRouter([
   {
@@ -46,15 +45,11 @@ const router = createBrowserRouter([
             element: <Bourse />,
           },
           {
-            element: <AuthenticationGuard/>,
-            children: [
-              {
-                id: "external-movie-page",
-                path: "/external-movie",
-                element: <ExternalMoviePage />,
-              },
-            ]
+            id: "Crypto",
+            path: "/Crypto",
+            element: <Crypto />,
           },
+
         ],
       },
     ],
