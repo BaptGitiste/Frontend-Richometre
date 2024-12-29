@@ -1,90 +1,134 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 
 const MesActionsPage: FunctionComponent = () => {
-    // Tableau fictif d'actions
-    const mesActions = [
-        {
-            nom: "Apple",
-            quantite: 10,
-            prixMoyenAchat: 135, // prix moyen d'achat fictif
-            coursDuJour: 142,    // cours du jour fictif
-        },
-        {
-            nom: "Tesla",
-            quantite: 5,
-            prixMoyenAchat: 700,
-            coursDuJour: 650,
-        },
-        {
-            nom: "Microsoft",
-            quantite: 8,
-            prixMoyenAchat: 250,
-            coursDuJour: 265,
-        },
-    ];
+    const [mesActions, setMesActions] = useState<any[]>([]); // Tableau des actions
+    const [showForm, setShowForm] = useState(false); // Contrôle de l'affichage du formulaire
+    const [formData, setFormData] = useState({ nom: "", quantite: 0, prix: 0 }); // Données du formulaire
+    const [isLoading, setIsLoading] = useState(false); // Indicateur de chargement
+    const [error, setError] = useState<string | null>(null); // Gestion des erreurs
 
-    // Calcul du montant total de tous les encours (somme des valeurs totales)
-    const montantTotalEncours = mesActions.reduce((accumulateur, action) => {
-        return accumulateur + action.quantite * action.coursDuJour;
-    }, 0);
+    // Récupération des données depuis le backend
+    useEffect(() => {
+        const fetchData = async () => {
+            setIsLoading(true);
+            setError(null);
+            try {
+                const response = await fetch("/portefeuille?type=action");
+                if (!response.ok) throw new Error("Erreur lors de la récupération des données.");
+                const data = await response.json();
+                setMesActions(data);
+            } catch (err: any) {
+                setError(err.message || "Une erreur est survenue.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
+
+    // Soumission du formulaire
+    const handleSubmit = async () => {
+        setError(null);
+        try {
+            const response = await fetch("/portefeuille", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...formData, type: "action" }),
+            });
+            if (!response.ok) throw new Error("Erreur lors de l'ajout de la transaction.");
+            const newTransaction = await response.json();
+            setMesActions((prev) => [...prev, newTransaction]);
+            setShowForm(false);
+        } catch (err: any) {
+            setError(err.message || "Une erreur est survenue lors de l'ajout.");
+        }
+    };
 
     return (
         <div style={{ padding: "1rem" }}>
             <h1>Mes Actions</h1>
+            {/* Bouton pour afficher le formulaire */}
+            <button onClick={() => setShowForm((prev) => !prev)}>
+                {showForm ? "Annuler" : "Ajouter/Acheter"}
+            </button>
 
-            {/* Montant total d'encours (en plus gros et en gras) */}
-            <div style={{ fontSize: "1.5em", fontWeight: "bold", marginBottom: "1rem" }}>
-                Encours total : {montantTotalEncours.toLocaleString()} $
-            </div>
+            {/* Affichage du formulaire */}
+            {showForm && (
+                <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+                    <div>
+                        <label>Nom :</label>
+                        <input
+                            type="text"
+                            placeholder="Nom"
+                            value={formData.nom}
+                            onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label>Quantité :</label>
+                        <input
+                            type="number"
+                            placeholder="Quantité"
+                            value={formData.quantite}
+                            onChange={(e) => setFormData({ ...formData, quantite: +e.target.value })}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label>Prix :</label>
+                        <input
+                            type="number"
+                            placeholder="Prix"
+                            value={formData.prix}
+                            onChange={(e) => setFormData({ ...formData, prix: +e.target.value })}
+                            required
+                        />
+                    </div>
+                    <button type="submit">Valider</button>
+                </form>
+            )}
 
-            <table style={{ borderCollapse: 'collapse', width: '100%' }}>
-                <thead>
-                <tr>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Nom</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Quantité</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Prix moyen d'achat ($)</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Cours du jour ($)</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Valeur Totale ($)</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>+/- value latente ($)</th>
-                </tr>
-                </thead>
-                <tbody>
-                {mesActions.map((action, index) => {
-                    // Calcul de la différence unitaire
-                    const differenceUnitaire = action.coursDuJour - action.prixMoyenAchat;
-                    // Calcul de la plus/moins-value latente
-                    const plusMoinsValue = differenceUnitaire * action.quantite;
-                    // Valeur totale actuelle
-                    const valeurTotale = action.quantite * action.coursDuJour;
+            {/* Indicateur de chargement */}
+            {isLoading && <p>Chargement des données...</p>}
 
-                    return (
-                        <tr key={index}>
-                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{action.nom}</td>
-                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{action.quantite}</td>
-                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                                {action.prixMoyenAchat.toLocaleString()}
-                            </td>
-                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                                {action.coursDuJour.toLocaleString()}
-                            </td>
-                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                                {valeurTotale.toLocaleString()}
-                            </td>
-                            <td
-                                style={{
-                                    border: '1px solid #ddd',
-                                    padding: '8px',
-                                    // Couleur verte si gain, rouge si perte
-                                    color: plusMoinsValue >= 0 ? 'green' : 'red',
-                                }}
-                            >
-                                {plusMoinsValue.toLocaleString()}
+            {/* Affichage des erreurs */}
+            {error && <p style={{ color: "red" }}>{error}</p>}
+
+            {/* Tableau des actions */}
+            {!isLoading && !error && mesActions.length > 0 && (
+                <table style={{ borderCollapse: "collapse", width: "100%" }}>
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Quantité</th>
+                        <th>Prix moyen d'achat (€)</th>
+                        <th>Cours du jour (€)</th>
+                        <th>Valeur Totale (€)</th>
+                        <th>+/- value latente (€)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {mesActions.map((action) => (
+                        <tr key={action.id}>
+                            <td>{action.nom}</td>
+                            <td>{action.quantite}</td>
+                            <td>{action.prix}</td>
+                            <td>{action.coursDuJour ?? "N/A"}</td>
+                            <td>{(action.quantite * (action.coursDuJour || 0)).toFixed(2)}</td>
+                            <td style={{ color: (action.coursDuJour - action.prix) >= 0 ? "green" : "red" }}>
+                                {((action.coursDuJour - action.prix) * action.quantite).toFixed(2)}
                             </td>
                         </tr>
-                    );
-                })}
-                </tbody>
-            </table>
+                    ))}
+                    </tbody>
+                </table>
+            )}
+
+            {/* Message si aucune action n'est disponible */}
+            {!isLoading && !error && mesActions.length === 0 && (
+                <p>Aucune action enregistrée pour le moment.</p>
+            )}
         </div>
     );
 };

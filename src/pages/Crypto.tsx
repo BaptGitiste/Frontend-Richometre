@@ -1,89 +1,134 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 
 const MesCryptosPage: FunctionComponent = () => {
-    // Tableau fictif de cryptos
-    const mesCryptos = [
-        {
-            nom: "Bitcoin",
-            quantite: 2,
-            prixMoyenAchat: 19000, // prix moyen d'achat fictif en €
-            coursDuJour: 23000,    // cours du jour fictif en €
-        },
-        {
-            nom: "Ethereum",
-            quantite: 5,
-            prixMoyenAchat: 1400,
-            coursDuJour: 1800,
-        },
-        {
-            nom: "BNB",
-            quantite: 10,
-            prixMoyenAchat: 270,
-            coursDuJour: 310,
-        },
-    ];
+    const [mesCryptos, setMesCryptos] = useState<any[]>([]); // Liste des cryptos
+    const [showForm, setShowForm] = useState(false); // Contrôle de l'affichage du formulaire
+    const [formData, setFormData] = useState({ nom: "", quantite: 0, prix: 0 }); // Données du formulaire
+    const [isLoading, setIsLoading] = useState(false); // Indicateur de chargement
+    const [error, setError] = useState<string | null>(null); // Gestion des erreurs
 
-    // Calcul du montant total de tous les encours (somme des valeurs totales)
-    const montantTotalEncours = mesCryptos.reduce((accumulateur, crypto) => {
-        return accumulateur + crypto.quantite * crypto.coursDuJour;
-    }, 0);
+    // Récupération des données depuis le backend
+    useEffect(() => {
+        const fetchData = async () => {
+            setIsLoading(true);
+            setError(null);
+            try {
+                const response = await fetch("/portefeuille?type=crypto");
+                if (!response.ok) throw new Error("Erreur lors de la récupération des données.");
+                const data = await response.json();
+                setMesCryptos(data);
+            } catch (err: any) {
+                setError(err.message || "Une erreur est survenue.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
+
+    // Soumission du formulaire
+    const handleSubmit = async () => {
+        setError(null);
+        try {
+            const response = await fetch("/portefeuille", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...formData, type: "crypto" }),
+            });
+            if (!response.ok) throw new Error("Erreur lors de l'ajout de la transaction.");
+            const newTransaction = await response.json();
+            setMesCryptos((prev) => [...prev, newTransaction]);
+            setShowForm(false);
+        } catch (err: any) {
+            setError(err.message || "Une erreur est survenue lors de l'ajout.");
+        }
+    };
 
     return (
         <div style={{ padding: "1rem" }}>
             <h1>Mes Cryptos</h1>
+            {/* Bouton pour afficher/masquer le formulaire */}
+            <button onClick={() => setShowForm((prev) => !prev)}>
+                {showForm ? "Annuler" : "Ajouter/Acheter"}
+            </button>
 
-            {/* Montant total d'encours (en plus gros et en gras) */}
-            <div style={{ fontSize: "1.5em", fontWeight: "bold", marginBottom: "1rem" }}>
-                Encours total : {montantTotalEncours.toLocaleString()} €
-            </div>
+            {/* Formulaire d'ajout de crypto */}
+            {showForm && (
+                <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+                    <div>
+                        <label>Nom :</label>
+                        <input
+                            type="text"
+                            placeholder="Nom"
+                            value={formData.nom}
+                            onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label>Quantité :</label>
+                        <input
+                            type="number"
+                            placeholder="Quantité"
+                            value={formData.quantite}
+                            onChange={(e) => setFormData({ ...formData, quantite: +e.target.value })}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label>Prix :</label>
+                        <input
+                            type="number"
+                            placeholder="Prix"
+                            value={formData.prix}
+                            onChange={(e) => setFormData({ ...formData, prix: +e.target.value })}
+                            required
+                        />
+                    </div>
+                    <button type="submit">Valider</button>
+                </form>
+            )}
 
-            <table style={{ borderCollapse: 'collapse', width: '100%' }}>
-                <thead>
-                <tr>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Nom</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Quantité</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Prix moyen d'achat (€)</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Cours du jour (€)</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Valeur Totale (€)</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>+/- value latente (€)</th>
-                </tr>
-                </thead>
-                <tbody>
-                {mesCryptos.map((crypto, index) => {
-                    // Calcul de la différence unitaire
-                    const differenceUnitaire = crypto.coursDuJour - crypto.prixMoyenAchat;
-                    // Calcul de la plus/moins-value latente
-                    const plusMoinsValue = differenceUnitaire * crypto.quantite;
-                    // Valeur totale actuelle
-                    const valeurTotale = crypto.quantite * crypto.coursDuJour;
+            {/* Indicateur de chargement */}
+            {isLoading && <p>Chargement des données...</p>}
 
-                    return (
-                        <tr key={index}>
-                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{crypto.nom}</td>
-                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{crypto.quantite}</td>
-                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                                {crypto.prixMoyenAchat.toLocaleString()}
-                            </td>
-                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                                {crypto.coursDuJour.toLocaleString()}
-                            </td>
-                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                                {valeurTotale.toLocaleString()}
-                            </td>
-                            <td
-                                style={{
-                                    border: '1px solid #ddd',
-                                    padding: '8px',
-                                    color: plusMoinsValue >= 0 ? 'green' : 'red',
-                                }}
-                            >
-                                {plusMoinsValue.toLocaleString()}
+            {/* Affichage des erreurs */}
+            {error && <p style={{ color: "red" }}>{error}</p>}
+
+            {/* Tableau des cryptos */}
+            {!isLoading && !error && mesCryptos.length > 0 && (
+                <table style={{ borderCollapse: "collapse", width: "100%" }}>
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Quantité</th>
+                        <th>Prix moyen d'achat (€)</th>
+                        <th>Cours du jour (€)</th>
+                        <th>Valeur Totale (€)</th>
+                        <th>+/- value latente (€)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {mesCryptos.map((crypto) => (
+                        <tr key={crypto.id}>
+                            <td>{crypto.nom}</td>
+                            <td>{crypto.quantite}</td>
+                            <td>{crypto.prix}</td>
+                            <td>{crypto.coursDuJour ?? "N/A"}</td>
+                            <td>{(crypto.quantite * (crypto.coursDuJour || 0)).toFixed(2)}</td>
+                            <td style={{ color: (crypto.coursDuJour - crypto.prix) >= 0 ? "green" : "red" }}>
+                                {((crypto.coursDuJour - crypto.prix) * crypto.quantite).toFixed(2)}
                             </td>
                         </tr>
-                    );
-                })}
-                </tbody>
-            </table>
+                    ))}
+                    </tbody>
+                </table>
+            )}
+
+            {/* Message si aucune crypto n'est disponible */}
+            {!isLoading && !error && mesCryptos.length === 0 && (
+                <p>Aucune crypto enregistrée pour le moment.</p>
+            )}
         </div>
     );
 };
