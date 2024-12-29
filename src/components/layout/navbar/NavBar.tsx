@@ -30,7 +30,7 @@ const NavBar: FunctionComponent = () => {
           <NavbarItem label={<span style={{ fontWeight: "bold", color: "white" }}>Home</span>} icon={<img src={reactLogo} alt='React Logo' />} to='/' />
         </li>
         <li>
-          <NavbarItem label={<span style={{ fontWeight: "bold", color: "white" }}>Bourse</span>} icon={<img src={reactLogo} alt='React Logo' />} to='/demo/123' state={{ from: "HomePage" }}/>
+          <NavbarItem label={<span style={{ fontWeight: "bold", color: "white" }}>Bourse</span>} icon={<img src={reactLogo} alt='React Logo' />} to='/Bourse' state={{ from: "HomePage" }}/>
         </li>
         <li>
           <NavbarItem label={<span style={{ fontWeight: "bold", color: "white" }}>Crypto</span>} icon={<img src={reactLogo} alt='React Logo' />} to='/external-movie' />

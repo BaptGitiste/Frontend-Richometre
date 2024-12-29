@@ -8,7 +8,7 @@ import LoginPage from "../pages/login/LoginPage";
 import RegisterPage from "../pages/register/RegisterPage";
 import AuthenticationGuard from "./AuthenticationGuard";
 import NotFoundPage from "../pages/not-found/NotFoundPage";
-import DemoPage from "../pages/DemoPage";
+import Bourse from "../pages/Bourse.tsx";
 
 const router = createBrowserRouter([
   {
@@ -41,9 +41,9 @@ const router = createBrowserRouter([
             element: <HomePage />,
           },
           {
-            id: "demo",
-            path: "/demo/:id",
-            element: <DemoPage />,
+            id: "Bourse",
+            path: "/Bourse",
+            element: <Bourse />,
           },
           {
             element: <AuthenticationGuard/>,
