@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import {createBrowserRouter, Navigate} from "react-router-dom";
 
 import HomePage from "../pages/HomePage";
 import Layout from "../components/layout/Layout";
@@ -19,6 +19,11 @@ const router = createBrowserRouter([
         Component: Layout,
         errorElement: <NotFoundPage/>,
         children: [
+          //{
+           // id: "defaultRedirect",
+          //  path: "/",
+          //  element: <Navigate to="/login" />, // Redirige vers /login par défaut
+          //},
           {
             id: "login",
             path: "/login",
