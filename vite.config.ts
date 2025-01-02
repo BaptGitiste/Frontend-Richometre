@@ -13,6 +13,12 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       port: parseInt(env.VITE_DEFAULT_PORT),
+      proxy: {
+        '/portefeuille': {
+          target: 'http://localhost:8080', // Adresse du backend
+          changeOrigin: true,             // Nécessaire pour les CORS
+        },
+      },
     },
     plugins: [react()],
   }
